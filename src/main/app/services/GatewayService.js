@@ -1,7 +1,7 @@
 
 import axios from '../node_modules/axios/index.js';
 //import axios from 'axios';
-const GATEWAY_API_BASE_URL = 'http://127.0.0.1:8080';
+const GATEWAY_API_BASE_URL = 'http://localhost:8080';
 
 class GatewayService{
 

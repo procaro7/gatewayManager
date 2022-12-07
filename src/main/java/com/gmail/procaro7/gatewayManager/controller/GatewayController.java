@@ -52,32 +52,44 @@ public class GatewayController {
 	}
 
 	@PostMapping(path = "/addPeripheral")
-	public ResponseEntity<HttpStatus> addPeripheral(@PathVariable("vendor") String vendor,  @PathVariable("gatewayId") String gatewayId){
-	//public @ResponseBody String addPeripheral(@RequestParam String vendor, @RequestParam String gatewayId) {
+	public ResponseEntity<HttpStatus> addPeripheral(@PathVariable("vendor") String vendor,
+			@PathVariable("gatewayId") String gatewayId) {
+		// public @ResponseBody String addPeripheral(@RequestParam String vendor,
+		// @RequestParam String gatewayId) {
 		try {
 			Gateway nGateway = getGateway(gatewayId);
 			nGateway.addPeripheral(vendor);
 			gatewayRepository.save(nGateway);
-		      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		    } catch (Exception e) {
-		      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		    }		
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PostMapping(path = "/updateGateway")
+	public ResponseEntity<HttpStatus> UpdateGateway(@PathVariable("gateway") Gateway gateway) {
+		try {
+			gatewayRepository.save(gateway);
+			return new ResponseEntity<>(HttpStatus.ACCEPTED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	private Gateway getGateway(String gatewayId) {
 		return gatewayRepository.findBySerialNumber(gatewayId).get(0);
 	}
 
-	
 	@DeleteMapping("/deletePeripheral/{id}/{gatewayId}")
-	public ResponseEntity<HttpStatus>  deletePeripheral(@PathVariable("id") long id, @PathVariable("gatewayId") String gatewayId) {
+	public ResponseEntity<HttpStatus> deletePeripheral(@PathVariable("id") long id,
+			@PathVariable("gatewayId") String gatewayId) {
 		try {
 			Gateway nGateway = getGateway(gatewayId);
 			nGateway.deletePeripheral(id);
 			gatewayRepository.save(nGateway);
-		      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		    } catch (Exception e) {
-		      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		    }		
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 }

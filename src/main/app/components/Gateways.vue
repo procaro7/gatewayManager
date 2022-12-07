@@ -21,15 +21,15 @@
   	<div class="row" >
   	<div class="col"> <button @click="showHide(gateway.serialNumber)" v-if='gateway.peripherals.length > 0' :id="gateway.serialNumber"> 📁️ </button></div>
 	<div class="col">  
-    <input type="text" :disabled='!disabled[gateway.serialNumber]'  :value="gateway.serialNumber"></div>
-	<div class="col"> <input type="text" :disabled='!disabled[gateway.serialNumber]'  :value="gateway.name"></div> 
-	<div class="col"><input type="text" :disabled='!disabled[gateway.serialNumber]'  :value="gateway.ipAddress"></div>
+    <input type="text" :disabled='!disabled[gateway.serialNumber]'   v-model="gateway.serialNumber"></div>
+	<div class="col"> <input type="text" :disabled='!disabled[gateway.serialNumber]'  v-model="gateway.name"></div> 
+	<div class="col"><input type="text" :disabled='!disabled[gateway.serialNumber]'  v-model="gateway.ipAddress"></div>
 	<div class="col"><button @click="changeActiveStatus(gateway.serialNumber)" :id="gateway.serialNumber">📃</button></div>
 	</div>
  <div v-for="peripheral in gateway.peripherals" id="hide" v-show='hidden[gateway.serialNumber]' :id="gateway.serialNumber">
                     <div class="row  bg-light">
                     		<div class="col-2"></div>
-                        	<div class="col"><input type="text" :disabled='!disabled[peripheral.id]'  :value="peripheral.vendor"></div>
+                        	<div class="col"><input type="text" :disabled='!disabled[peripheral.id]'  v-model="peripheral.vendor"></div>
                         	<div class="col form-check form-switch" >  
                         	
                         	  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" :checked="peripheral.status"
@@ -47,10 +47,15 @@
   </div>
   </div>
 </div>
+</div>
+
+
            
             
   
-            </div>
+      
+            
+            
 </template>
 
 <script>
@@ -65,6 +70,7 @@ export default {
        
     data(){
         return {
+        showModal: false,
         toggle: false,
         	hidden: {},
         	disabled: {},
@@ -88,6 +94,10 @@ export default {
         changeActiveStatus(id){
         	this.$set(this.disabled, id, !this.disabled[id]);
         },
+        showModal(){
+        	console.log('Show Modal');
+        },
+        
     },
     created() {
         this.getGateways();      
