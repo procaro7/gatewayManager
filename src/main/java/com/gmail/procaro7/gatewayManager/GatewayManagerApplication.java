@@ -12,6 +12,8 @@ public class GatewayManagerApplication {
 		SpringApplication.run(GatewayManagerApplication.class, args);
 	}
 	
+	
+	
 	  
 
 }

@@ -19,7 +19,7 @@
   </div>
   <div  v-for="gateway in gateways" >
   	<div class="row" >
-  	<div class="col"> <button @click="showHide(gateway.serialNumber)" v-if='gateway.peripherals.length > 0' :id="gateway.serialNumber"> 📁️ </button></div>
+  	<div class="col"> <button @click="showHide(gateway.serialNumber)" v-if='gateway.peripherals.length > 0' :id="gateway.serialNumber"> ↕️ </button></div>
 	<div class="col">  
     <input type="text" :disabled='!disabled[gateway.serialNumber]'   v-model="gateway.serialNumber"></div>
 	<div class="col"> <input type="text" :disabled='!disabled[gateway.serialNumber]'  v-model="gateway.name"></div> 
@@ -39,7 +39,8 @@
                         	<div class="col">{{peripheral.created}}</div> 
                         	<div class="col"> 
                         	<button @click="changeActiveStatus(peripheral.id)" :id="peripheral.id">📃</button>
-                        	<button @click="deletePeripheral(peripheral.id,gateway.serialNumber)" :id="peripheral.id"> 💾️ </button>
+                        	<button @click="updatePeripheral(peripheral)" :id="peripheral.id"> 💾️ </button>
+                        	<!--<button @click="updateGateway(gateway)" :id="peripheral.id"> 💾️ </button>--> 
                         	<button @click="deletePeripheral(peripheral.id,gateway.serialNumber)" :id="peripheral.id"> 🗑️ </button>                        	
                         	 </div>
                         	  
@@ -61,22 +62,21 @@
 <script>
 
 import GatewayService from '../services/GatewayService';
-
   
-
 export default {
+	components: {},
 
     name: 'Gateways',
        
     data(){
         return {
-        showModal: false,
         toggle: false,
         	hidden: {},
         	disabled: {},
             gateways: []
         }
     },
+    
     methods: {
         getGateways(){
             GatewayService.getGateways().then((response) => {
@@ -94,9 +94,18 @@ export default {
         changeActiveStatus(id){
         	this.$set(this.disabled, id, !this.disabled[id]);
         },
-        showModal(){
-        	console.log('Show Modal');
+        
+        updateGateway(gateway){
+        	GatewayService.updateGateway(gateway).then((response) => {
+                 this.getGateways(); 
+            });
+        	
         },
+        updatePeripheral(peripheral){
+        	GatewayService.updatePeripheral(peripheral).then((response) => {
+                 this.getGateways(); 
+            });
+        }
         
     },
     created() {

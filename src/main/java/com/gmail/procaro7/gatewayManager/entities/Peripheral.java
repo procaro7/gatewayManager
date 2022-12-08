@@ -1,5 +1,6 @@
 package com.gmail.procaro7.gatewayManager.entities;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
@@ -42,8 +43,10 @@ public class Peripheral {
 		return created;
 	}
 
-	public void setCreated(Date created) {
-		this.created = created;
+	public void setCreated() {
+		Timestamp ts=new Timestamp(System.currentTimeMillis());  
+        Date date=new Date(ts.getTime());  
+		this.created = date;
 	}
 
 	public boolean isStatus() {

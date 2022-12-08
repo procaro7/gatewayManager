@@ -1,6 +1,6 @@
 package com.gmail.procaro7.gatewayManager.entities;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -47,8 +47,10 @@ public class Gateway {
 
 		Peripheral peripheral = new Peripheral();
 		peripheral.setVendor(pVendor);
-		Date date = java.sql.Date.valueOf(LocalDate.now());
-		peripheral.setCreated(date);
+		  Timestamp ts=new Timestamp(System.currentTimeMillis());  
+          Date date=new Date(ts.getTime());  
+		//Date date = LocalDateTime.now().
+		peripheral.setCreated();
 
 		List<Peripheral> peripherals = this.getPeripherals();
 		if (peripherals == null)
@@ -112,7 +114,7 @@ public class Gateway {
 	public void deletePeripheral(long id) {
 		for (Iterator<Peripheral> iterator = peripherals.iterator(); iterator.hasNext();) {
 			Peripheral peripheral = (Peripheral) iterator.next();
-			if (peripheral.getId()== id) {
+			if (peripheral.getId() == id) {
 				peripherals.remove(peripheral);
 				return;
 			}
