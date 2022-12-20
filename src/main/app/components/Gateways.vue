@@ -23,13 +23,13 @@
   </div>
   <div  v-for="gateway in gateways" >
   	<div class="row" >
-  	<div class="col"> <button @click="showHide(gateway.serialNumber)" v-if='gateway.peripherals.length > 0' :id="gateway.serialNumber"> ↕️ </button></div>
+  	<div class="col"> <button @click="showHide(gateway.serialNumber)" v-if='gateway.peripherals.length > 0' :id="gateway.serialNumber" title="Show Peripherals"> ↕️ </button></div>
 	<div class="col">  
     <input type="text" :disabled='!disabled[gateway.serialNumber]'   v-model="gateway.serialNumber"></div>
 	<div class="col"> <input type="text" :disabled='!disabled[gateway.serialNumber]'  v-model="gateway.name"></div> 
 	<div class="col"><input type="text" :disabled='!disabled[gateway.serialNumber]'  v-model="gateway.ipAddress"></div>
 	<div class="col"><button @click="changeActiveStatus(gateway.serialNumber)" :id="gateway.serialNumber" title="Edit Gateway">📃</button></div>
-	<div class="col"><button @click="$router.push({ name: 'addperipheral', params: { gateway: gateway } })">➕️</button></div>
+	<div class="col"><button @click="$router.push({ name: 'addperipheral', params: { gateway: gateway } })" title="Add Peripheral">➕️</button></div>
 	<div class="col"><button @click="deleteGateway(gateway.serialNumber)" :id="gateway.serialNumber" title="Delete Gateway"> 🗑️ </button> </div>
 	</div>
  <div v-for="peripheral in gateway.peripherals" id="hide" v-show='hidden[gateway.serialNumber]' :id="gateway.serialNumber">
@@ -44,10 +44,10 @@
                         	</div>	
                         	<div class="col">{{peripheral.created}}</div> 
                         	<div class="col"> 
-                        	<button @click="changeActiveStatus(peripheral.id)" :id="peripheral.id">📃</button>
-                        	<button @click="updatePeripheral(peripheral)" :id="peripheral.id"> 💾️ </button>
+                        	<button @click="changeActiveStatus(peripheral.id)" :id="peripheral.id" title="Edit Peripheral">📃</button>
+                        	<button @click="updatePeripheral(peripheral)" :id="peripheral.id" title="Save Changes"> 💾️ </button>
                         	<!--<button @click="updateGateway(gateway)" :id="peripheral.id"> 💾️ </button>--> 
-                        	<button @click="deletePeripheral(peripheral.id,gateway.serialNumber)" :id="peripheral.id"> 🗑️ </button>                        	
+                        	<button @click="deletePeripheral(peripheral.id,gateway.serialNumber)" :id="peripheral.id" title="Delete Peripheral"> 🗑️ </button>                        	
                         	 </div>
                         	  
                         </div> 
