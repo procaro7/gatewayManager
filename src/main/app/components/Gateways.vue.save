@@ -1,0 +1,124 @@
+OOO<template>
+    <div class = "container">
+            
+            <h1 class = "text-center"> Gateway List</h1>
+            
+<diOOBOOB
+O
+OOOv class="container text-center">
+  <div class="row">
+ OOO <div class="col"></div>
+    <div class="col">
+    O  Serial Number
+    </div>
+    <OOdiv class="col">
+      NOOOame
+    </divOB>
+    <div class="coOOAOA
+      AOA
+cl">
+      IP Address
+    </div>OBOBOAOA
+    <div classOOBOO="col"></div>
+  </div>
+  <div  v-for="gateway in gateways" >
+  	<div class="row" >
+  	<div class="col"> <button @click="showHide(gateway.serialNumber)" v-if='gateway.peripherals.length > 0' :id="gateway.serialNumber"> 📁️ </button></div>
+	<div class="col">  
+    <input type="text" :disabled='!disabled[gateway.serialNumber]'   v-model="gateway.serialNumber"></div>
+	<div class="col"> <input type="text" :disabled='!disabled[gateway.serialNumber]'  v-model="gateway.name"></div> 
+	<div class="col"><input type="text" :disabled='!disabled[gateway.serialNumber]'  v-model="gateway.ipAddress"></div>
+	<div class="col"><button @click="changeActiveStatus(gateway.serialNumber)" :id="gateway.serialNumber">📃</button></div>
+	</div>
+ <div v-for="peripheral in gateway.peripherals" id="hide" v-show='hidden[gateway.serialNumber]' :id="gateway.serialNumber">
+                    <div class="row  bg-light">
+                    		<div class="col-2"></div>
+                        	<div class="col"><input type="text" :disabled='!disabled[peripheral.id]'  v-model="peripheral.vendor"></div>
+                        	<div class="col form-check form-switch" >  
+                        	
+                        	  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" :checked="peripheral.status"
+                        	  :disabled='!disabled[peripheral.id]' >
+  								                       	
+                        	</div>	
+                        	<div class="col">{{peripheral.created}}</div> 
+                        	<div class="col"> 
+                        	<button @click="changeActiveStatus(peripheral.id)" :id="peripheral.id">📃</button>
+                        	<button @click="updateGateway(gateway)" :id="peripheral.id"> 💾️ </button>
+                        	<button @click="deletePeripheral(peripheral.id,gateway.serialNumber)" :id="peripheral.id"> 🗑️ </button>                        	
+                        	 </div>
+                        	  
+                        </div> 
+  </div>
+  </div>
+</div>
+</div>
+
+
+           
+            
+  
+      
+            
+            
+</template>
+
+<script>
+
+import GatewayService from '../services/GatewayService';
+
+  
+
+export default {
+
+    name: 'Gateways',
+       
+    data(){
+        return {
+        showModal: false,
+        toggle: false,
+        	hidden: {},
+        	disabled: {},
+            gateways: []
+        }
+    },
+    methods: {
+        getGateways(){
+            GatewayService.getGateways().then((response) => {
+                this.gateways = response.data;   
+            });
+        },
+        showHide(id) {        	
+            this.$set(this.hidden, id, !this.hidden[id]);           
+        }  ,
+        deletePeripheral(id, gatewayId){
+        	GatewayService.deletePeripheral(id, gatewayId).then((response) => {
+                 this.getGateways(); 
+            });
+        },
+        changeActiveStatus(id){
+        	this.$set(this.disabled, id, !this.disabled[id]);
+        },
+        showModal(){
+        	console.log('Show Modal');
+        },
+        updateGateway(gateway){
+        	GatewayService.updateGateway(gateway).then((response) => {
+                 this.getGateways(); 
+            });
+        	
+        }
+        
+    },
+    created() {
+        this.getGateways();      
+
+    }
+     
+   
+    
+}
+
+
+
+</script>
+
