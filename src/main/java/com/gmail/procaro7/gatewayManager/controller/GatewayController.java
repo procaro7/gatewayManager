@@ -1,5 +1,8 @@
 package com.gmail.procaro7.gatewayManager.controller;
 
+import java.io.Console;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,7 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.gmail.procaro7.gatewayManager.entities.Gateway;
+import com.gmail.procaro7.gatewayManager.entities.Peripheral;
 import com.gmail.procaro7.gatewayManager.excepcion.BadIpAddressException;
+import com.gmail.procaro7.gatewayManager.excepcion.GatewayFullException;
 import com.gmail.procaro7.gatewayManager.repository.GatewayRepository;
 
 @CrossOrigin
@@ -38,34 +43,29 @@ public class GatewayController {
 
 	@PostMapping(path = "/add")
 	public @ResponseBody String addNewgateway(@RequestParam String serialNumber, @RequestParam String name,
-			String ipAddress) {
+			String ipAddress) throws Exception {
 		// @ResponseBody means the returned String is the response, not a view name
 		// @RequestParam means it is a parameter from the GET or POST request
 
-		try {
+		
 			Gateway _gatewaey = new Gateway(serialNumber, name, ipAddress);
 			gatewayRepository.save(_gatewaey);
 			return "Saved";
 
-		} catch (BadIpAddressException e) {
-			return "Not Saved--> BadIpAddress";
-		}
+		
 
 	}
 
 	@PostMapping(path = "/addPeripheral")
-	public ResponseEntity<HttpStatus> addPeripheral(@RequestParam String vendor,
-			@RequestParam String gatewayId) {
+	public ResponseEntity<HttpStatus> addPeripheral(@RequestBody Peripheral peripheral) throws GatewayFullException {
 		// public @ResponseBody String addPeripheral(@RequestParam String vendor,
 		// @RequestParam String gatewayId) {
-		try {
-			Gateway nGateway = getGateway(gatewayId);
-			nGateway.addPeripheral(vendor);
+		    System.out.println(peripheral.getVendor());
+			Gateway nGateway = getGateway(peripheral.getGatewayId());
+			nGateway.addPeripheral(peripheral.getVendor());
 			gatewayRepository.save(nGateway);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
 	}
 	/*@PutMapping(path = "/addPeripheral/{gatewayId}/{peripheral}")
 	public ResponseEntity<HttpStatus> addPeripheral(@PathVariable("gatewayId") String gatewayId,
@@ -84,19 +84,37 @@ public class GatewayController {
 
 	@CrossOrigin
 	@PostMapping(path = "/updateGateway")
-	public ResponseEntity<HttpStatus> UpdateGateway(@RequestBody Gateway gateway) {
-		try {
-			Gateway n =gatewayRepository.findBySerialNumber(gateway.getSerialNumber()).get(0);
-			gatewayRepository.save(gateway);
-			return new ResponseEntity<>(HttpStatus.ACCEPTED);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	public String UpdateGateway(@RequestBody Gateway gateway) {
+		
+			Gateway _gateway;
+			List<Gateway> n = gatewayRepository.findBySerialNumber(gateway.getSerialNumber());
+			if (n.size()<=0) {
+				_gateway = new Gateway(gateway);
+								
+			}
+			else {
+				_gateway = n.get(0);
+				_gateway.setName(gateway.getName());
+				_gateway.setIpAddress(gateway.getIpAddress());				
+			}	
+			
+			gatewayRepository.save(_gateway);
+			return "Saved";
+		
 	}
+
+
 
 	private Gateway getGateway(String gatewayId) {
 		return gatewayRepository.findBySerialNumber(gatewayId).get(0);
+	}
+	
+	@DeleteMapping("/deleteGateway/{gatewayId}")
+	public ResponseEntity<HttpStatus> deleteGateway(@PathVariable("gatewayId") String gatewayId){		
+			Gateway nGateway = getGateway(gatewayId);
+			gatewayRepository.delete(nGateway);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	
 	}
 	
 	
@@ -110,7 +128,8 @@ public class GatewayController {
 			gatewayRepository.save(nGateway);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
+					//<>(HttpStatus.INTERNAL_SERVER_ERROR);e
 		}
 	}
 }

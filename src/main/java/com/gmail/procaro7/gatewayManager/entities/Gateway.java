@@ -73,6 +73,12 @@ public class Gateway {
 		// TODO Auto-generated constructor stub
 	}
 
+	public Gateway(Gateway gateway) throws BadIpAddressException{
+		this.serialNumber = gateway.getSerialNumber();
+		this.name = gateway.getName();
+		setIpAddress(gateway.getIpAddress());
+	}
+
 	// private static final String IPV4_PATTERN3 =
 	// "^(([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-4])(\\.(?!$)|$)){4}$";
 	private static final String IPV4_PATTERN = "^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-4])\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-4])\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-4])\\.([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-4])";
@@ -102,7 +108,7 @@ public class Gateway {
 		if (isValidIp(ipAddress)) {
 			this.ipAddress = ipAddress;
 		} else {
-			throw new BadIpAddressException();
+			throw new BadIpAddressException("701-Invalid iP Address");
 		}
 	}
 

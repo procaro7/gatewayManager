@@ -2,7 +2,9 @@
     <div class = "container">
             
             <h1 class = "text-center"> Gateway List</h1>
-            
+             <NuxtLink to="/addgateway">Add a Gateway</NuxtLink>
+             
+             
 <div class="container text-center">
   <div class="row">
   <div class="col"></div>
@@ -16,6 +18,8 @@
       IP Address
     </div>
     <div class="col"></div>
+     <div class="col"></div>
+     
   </div>
   <div  v-for="gateway in gateways" >
   	<div class="row" >
@@ -24,7 +28,9 @@
     <input type="text" :disabled='!disabled[gateway.serialNumber]'   v-model="gateway.serialNumber"></div>
 	<div class="col"> <input type="text" :disabled='!disabled[gateway.serialNumber]'  v-model="gateway.name"></div> 
 	<div class="col"><input type="text" :disabled='!disabled[gateway.serialNumber]'  v-model="gateway.ipAddress"></div>
-	<div class="col"><button @click="changeActiveStatus(gateway.serialNumber)" :id="gateway.serialNumber">📃</button></div>
+	<div class="col"><button @click="changeActiveStatus(gateway.serialNumber)" :id="gateway.serialNumber" title="Edit Gateway">📃</button></div>
+	<div class="col"><button @click="$router.push({ name: 'addperipheral', params: { gatewayId: gateway.serialNumber } })">➕️</button></div>
+	<div class="col"><button @click="deleteGateway(gateway.serialNumber)" :id="gateway.serialNumber" title="Delete Gateway"> 🗑️ </button> </div>
 	</div>
  <div v-for="peripheral in gateway.peripherals" id="hide" v-show='hidden[gateway.serialNumber]' :id="gateway.serialNumber">
                     <div class="row  bg-light">
@@ -48,7 +54,16 @@
   </div>
   </div>
 </div>
+
+ <b-modal id="modal1" title="Add Peripheral">
+      <p class="my-4">Add Peripheral</p>
+      
+      
+    </b-modal>
 </div>
+
+
+
 
 
            
@@ -60,6 +75,10 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import BootstrapVue from "bootstrap-vue";
+import bootstrapvue from 'bootstrap-vue';
+Vue.use(bootstrapvue);
 
 import GatewayService from '../services/GatewayService';
   
@@ -91,6 +110,11 @@ export default {
                  this.getGateways(); 
             });
         },
+        deleteGateway(gatewayId){
+        	GatewayService.deleteGateway(gatewayId).then((response) => {
+                 this.getGateways(); 
+            });
+        },
         changeActiveStatus(id){
         	this.$set(this.disabled, id, !this.disabled[id]);
         },
@@ -101,11 +125,18 @@ export default {
             });
         	
         },
+        addPeripheral(gatewayId){
+        	this.showModal();
+        },
+        showModal() {
+         //this.selectedItem = item;
+         this.$root.$emit("bv::show::modal", "modal1");
+   		 },
         updatePeripheral(peripheral){
         	GatewayService.updatePeripheral(peripheral).then((response) => {
                  this.getGateways(); 
             });
-        }
+        }        
         
     },
     created() {

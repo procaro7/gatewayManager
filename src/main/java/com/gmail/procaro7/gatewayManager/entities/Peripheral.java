@@ -22,7 +22,7 @@ public class Peripheral {
 	@ManyToOne
 	@JoinColumn(name = "Gateway_id")
 	private Gateway gateway;
-
+	
 	private String vendor;
 
 	@Nullable
@@ -57,9 +57,9 @@ public class Peripheral {
 		this.status = status;
 	}
 
-	/*public Gateway getGateway() {
-		return gateway;
-	}*/
+	public String getGatewayId() {
+		return gateway.getSerialNumber();
+	}
 
 	public void setGateway(Gateway gateway)  {
 		this.gateway = gateway;

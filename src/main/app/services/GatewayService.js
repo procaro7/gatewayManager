@@ -19,7 +19,7 @@ const actions = {
 class GatewayService {
 
 	getGateways() {
-		return axios.get(GATEWAY_API_BASE_URL + "/gateway/all");
+		 return axios.get(GATEWAY_API_BASE_URL + "/gateway/all");
 	}
 
 	async deletePeripheral(id, gatewayId) {
@@ -33,7 +33,7 @@ class GatewayService {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(gateway),
-		}).then(({ data }) => console.log(data));
+		});
 	}
 	async updatePeripheral(peripheral) {
 
@@ -46,6 +46,45 @@ class GatewayService {
 			body: JSON.stringify(peripheral),
 		});
 	}
+	 async deleteGateway(gatewayId){
+		await axios.delete(GATEWAY_API_BASE_URL + "/gateway/deleteGateway/" + gatewayId);
+	}
+	
+	async addPeripheral(peripheral){
+		
+		await fetch(GATEWAY_API_BASE_URL + "/gateway/addPeripheral", {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(peripheral),
+		
+		/*this.submitting = true;
+		axios.post(GATEWAY_API_BASE_URL + "/gateway/addPeripheral",{
+			vendor: mivendor,
+    		gatewayId: migatewayId,
+		}).
+		then((response) => {
+          const data = response.data;
+          */
+          
+		/*let req = {
+    		vendor: vendor,
+    		gatewayId: gatewayId,      
+    		}  
+		await fetch(GATEWAY_API_BASE_URL + "/gateway/addPeripheral", {
+			method: 'POST',			
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(req),*/
+            
+			
+		});
+	}
+	
 }
 
 export default new GatewayService();
