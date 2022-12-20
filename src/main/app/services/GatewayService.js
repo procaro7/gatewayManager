@@ -50,15 +50,21 @@ class GatewayService {
 		await axios.delete(GATEWAY_API_BASE_URL + "/gateway/deleteGateway/" + gatewayId);
 	}
 	
-	async addPeripheral(peripheral){
+	async addPeripheral(peripheral,gateway){
 		
+		let req = {
+    		peripheral: peripheral,
+    		gateway: gateway,      
+    		}  
+    		let lenght = gateway.peripherals.length;
+    		gateway.peripherals[length] = peripheral;
 		await fetch(GATEWAY_API_BASE_URL + "/gateway/addPeripheral", {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(peripheral),
+			body: JSON.stringify(gateway),
 		
 		/*this.submitting = true;
 		axios.post(GATEWAY_API_BASE_URL + "/gateway/addPeripheral",{

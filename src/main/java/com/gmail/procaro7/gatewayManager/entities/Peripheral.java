@@ -10,6 +10,15 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Peripheral {
+	
+	public Peripheral(String vendor, boolean status) {
+		this.setVendor(vendor);
+		this.status = status;
+	}
+	
+	public Peripheral() {
+		super();
+	}
 
 	@Id
 	@jakarta.persistence.GeneratedValue()

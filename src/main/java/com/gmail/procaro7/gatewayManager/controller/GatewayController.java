@@ -1,6 +1,5 @@
 package com.gmail.procaro7.gatewayManager.controller;
 
-import java.io.Console;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,89 +46,92 @@ public class GatewayController {
 		// @ResponseBody means the returned String is the response, not a view name
 		// @RequestParam means it is a parameter from the GET or POST request
 
-		
-			Gateway _gatewaey = new Gateway(serialNumber, name, ipAddress);
-			gatewayRepository.save(_gatewaey);
-			return "Saved";
-
-		
+		Gateway _gatewaey = new Gateway(serialNumber, name, ipAddress);
+		gatewayRepository.save(_gatewaey);
+		return "Saved";
 
 	}
 
 	@PostMapping(path = "/addPeripheral")
-	public ResponseEntity<HttpStatus> addPeripheral(@RequestBody Peripheral peripheral) throws GatewayFullException {
+	public ResponseEntity<HttpStatus> addPeripheral(@RequestBody Gateway gateway) throws GatewayFullException {
 		// public @ResponseBody String addPeripheral(@RequestParam String vendor,
 		// @RequestParam String gatewayId) {
-		    System.out.println(peripheral.getVendor());
-			Gateway nGateway = getGateway(peripheral.getGatewayId());
-			nGateway.addPeripheral(peripheral.getVendor());
+		int quantity = gateway.getPeripherals().size();
+		if (quantity > 0) {
+			Gateway nGateway = getGateway(gateway.getSerialNumber());
+			Peripheral peripheral = gateway.getPeripherals().get(quantity-1);
+			nGateway.addPeripheral(peripheral.getVendor(),peripheral.isStatus());
 			gatewayRepository.save(nGateway);
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		
-	}
-	/*@PutMapping(path = "/addPeripheral/{gatewayId}/{peripheral}")
-	public ResponseEntity<HttpStatus> addPeripheral(@PathVariable("gatewayId") String gatewayId,
-			@PathVariable("peripheral") Peripheral peripheral) {
-		// public @ResponseBody String addPeripheral(@RequestParam String vendor,
-		// @RequestParam String gatewayId) {
-		try {
-			Gateway nGateway = getGateway(gatewayId);
-			nGateway.addPeripheral(vendor);
-			gatewayRepository.save(nGateway);
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.ACCEPTED);
+		}else {
+			
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-	}*/
+
+	}
+
+	@PostMapping(path = "/addPeripheralCurl")
+	public ResponseEntity<HttpStatus> addPeripheral(@RequestParam String vendor, @RequestParam String gatewayId)
+			throws GatewayFullException {
+		Gateway nGateway = getGateway(gatewayId);
+		nGateway.addPeripheral(vendor,false);
+		gatewayRepository.save(nGateway);
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+
+	}
+
+	/*
+	 * @PutMapping(path = "/addPeripheral/{gatewayId}/{peripheral}") public
+	 * ResponseEntity<HttpStatus> addPeripheral(@PathVariable("gatewayId") String
+	 * gatewayId,
+	 * 
+	 * @PathVariable("peripheral") Peripheral peripheral) { // public @ResponseBody
+	 * String addPeripheral(@RequestParam String vendor, // @RequestParam String
+	 * gatewayId) { try { Gateway nGateway = getGateway(gatewayId);
+	 * nGateway.addPeripheral(vendor); gatewayRepository.save(nGateway); return new
+	 * ResponseEntity<>(HttpStatus.NO_CONTENT); } catch (Exception e) { return new
+	 * ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); } }
+	 */
 
 	@CrossOrigin
 	@PostMapping(path = "/updateGateway")
 	public String UpdateGateway(@RequestBody Gateway gateway) {
-		
-			Gateway _gateway;
-			List<Gateway> n = gatewayRepository.findBySerialNumber(gateway.getSerialNumber());
-			if (n.size()<=0) {
-				_gateway = new Gateway(gateway);
-								
-			}
-			else {
-				_gateway = n.get(0);
-				_gateway.setName(gateway.getName());
-				_gateway.setIpAddress(gateway.getIpAddress());				
-			}	
-			
-			gatewayRepository.save(_gateway);
-			return "Saved";
-		
+
+		Gateway _gateway;
+		List<Gateway> n = gatewayRepository.findBySerialNumber(gateway.getSerialNumber());
+		if (n.size() <= 0) {
+			_gateway = new Gateway(gateway);
+
+		} else {
+			_gateway = n.get(0);
+			_gateway.setName(gateway.getName());
+			_gateway.setIpAddress(gateway.getIpAddress());
+		}
+
+		gatewayRepository.save(_gateway);
+		return "Saved";
+
 	}
-
-
 
 	private Gateway getGateway(String gatewayId) {
 		return gatewayRepository.findBySerialNumber(gatewayId).get(0);
 	}
-	
+
 	@DeleteMapping("/deleteGateway/{gatewayId}")
-	public ResponseEntity<HttpStatus> deleteGateway(@PathVariable("gatewayId") String gatewayId){		
-			Gateway nGateway = getGateway(gatewayId);
-			gatewayRepository.delete(nGateway);
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	
+	public ResponseEntity<HttpStatus> deleteGateway(@PathVariable("gatewayId") String gatewayId) {
+		Gateway nGateway = getGateway(gatewayId);
+		gatewayRepository.delete(nGateway);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
 	}
-	
-	
 
 	@DeleteMapping("/deletePeripheral/{id}/{gatewayId}")
 	public ResponseEntity<HttpStatus> deletePeripheral(@PathVariable("id") long id,
-			@PathVariable("gatewayId") String gatewayId) {
-		try {
+			@PathVariable("gatewayId") String gatewayId) throws Exception {
+		
 			Gateway nGateway = getGateway(gatewayId);
 			nGateway.deletePeripheral(id);
 			gatewayRepository.save(nGateway);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		} catch (Exception e) {
-			return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
-					//<>(HttpStatus.INTERNAL_SERVER_ERROR);e
-		}
 	}
 }

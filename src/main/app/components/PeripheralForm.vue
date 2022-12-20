@@ -1,6 +1,6 @@
 <template>
 <div class = "container ">
-<h3> Gateway --> {{this.gatewayId}}</h3>
+<h3> Gateway --> {{this.gateway.serialNumber}}</h3>
 	<div class="form-group " >
 		<div class="row d-flex flex-wrap align-content-stretch">
 			<div class="col d-flex  w-25"><label>Vendor</label></div>
@@ -12,7 +12,7 @@
 		<div class="col">Status</div>
 		<div class="col form-check form-switch" >  
                         	
-                        	  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" :checked="peripheral.status"
+                        	  <input class="form-check-input" type="checkbox" role="switch" id="peripheral.status" v-model="peripheral.status"
                         	   >
   								                       	
                         	</div>	
@@ -38,7 +38,7 @@ import GatewayService from '../services/GatewayService';
 		name: 'Peripheral',
 		props: ['peripheral'],
 		data(){
-			return { gatewayId: this.$route.params.gatewayId}
+			return { gateway: this.$route.params.gateway}
 		},
 		
 		validations :{
@@ -58,8 +58,9 @@ import GatewayService from '../services/GatewayService';
       			this.$v.peripheral.vendor.$touch()
    		 	},
    		 	submit(){
-   		 	this.peripheral.gatewayId = this.gatewayId;
-   		 	GatewayService.addPeripheral(this.peripheral).then((response) => {
+   		 	
+   		 	
+   		 	GatewayService.addPeripheral(this.peripheral,this.gateway).then((response) => {
                  this.$router.push('/')
             }).catch(e => {
         error({ statusCode: 404, message: 'Post not found' })

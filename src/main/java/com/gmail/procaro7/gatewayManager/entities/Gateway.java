@@ -43,13 +43,9 @@ public class Gateway {
 		this.peripherals = peripherals;
 	}
 
-	public void addPeripheral(String pVendor) throws GatewayFullException {
+	public void addPeripheral(String pVendor, boolean status) throws GatewayFullException {
 
-		Peripheral peripheral = new Peripheral();
-		peripheral.setVendor(pVendor);
-		  Timestamp ts=new Timestamp(System.currentTimeMillis());  
-          Date date=new Date(ts.getTime());  
-		//Date date = LocalDateTime.now().
+		Peripheral peripheral = new Peripheral(pVendor,status);
 		peripheral.setCreated();
 
 		List<Peripheral> peripherals = this.getPeripherals();

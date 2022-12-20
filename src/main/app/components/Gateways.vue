@@ -29,7 +29,7 @@
 	<div class="col"> <input type="text" :disabled='!disabled[gateway.serialNumber]'  v-model="gateway.name"></div> 
 	<div class="col"><input type="text" :disabled='!disabled[gateway.serialNumber]'  v-model="gateway.ipAddress"></div>
 	<div class="col"><button @click="changeActiveStatus(gateway.serialNumber)" :id="gateway.serialNumber" title="Edit Gateway">📃</button></div>
-	<div class="col"><button @click="$router.push({ name: 'addperipheral', params: { gatewayId: gateway.serialNumber } })">➕️</button></div>
+	<div class="col"><button @click="$router.push({ name: 'addperipheral', params: { gateway: gateway } })">➕️</button></div>
 	<div class="col"><button @click="deleteGateway(gateway.serialNumber)" :id="gateway.serialNumber" title="Delete Gateway"> 🗑️ </button> </div>
 	</div>
  <div v-for="peripheral in gateway.peripherals" id="hide" v-show='hidden[gateway.serialNumber]' :id="gateway.serialNumber">
@@ -38,7 +38,7 @@
                         	<div class="col"><input type="text" :disabled='!disabled[peripheral.id]'  v-model="peripheral.vendor"></div>
                         	<div class="col form-check form-switch" >  
                         	
-                        	  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" :checked="peripheral.status"
+                        	  <input class="form-check-input" type="checkbox" role="switch" :id="peripheral.status" v-model="peripheral.status"
                         	  :disabled='!disabled[peripheral.id]' >
   								                       	
                         	</div>	

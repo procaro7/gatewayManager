@@ -22,7 +22,6 @@ export default {
     return {
       gatewayId: String,
        peripheral: {
-       gatewayId: '',
         vendor: '',
         status: '',
       }
