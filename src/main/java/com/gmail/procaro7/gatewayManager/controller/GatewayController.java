@@ -59,8 +59,13 @@ public class GatewayController {
 		int quantity = gateway.getPeripherals().size();
 		if (quantity > 0) {
 			Gateway nGateway = getGateway(gateway.getSerialNumber());
-			Peripheral peripheral = gateway.getPeripherals().get(quantity-1);
-			nGateway.addPeripheral(peripheral.getVendor(),peripheral.isStatus());
+			for (Peripheral _peripheral : gateway.getPeripherals()) {
+				if (!(_peripheral.getId()>0)) {
+					nGateway.addPeripheral(_peripheral.getVendor(),_peripheral.isStatus());
+					break;
+				}
+			}
+			
 			gatewayRepository.save(nGateway);
 			return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		}else {
