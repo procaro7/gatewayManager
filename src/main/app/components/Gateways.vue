@@ -29,7 +29,7 @@
 	<div class="col"> <input type="text" :disabled='!disabled[gateway.serialNumber]'  v-model="gateway.name"></div> 
 	<div class="col"><input type="text" :disabled='!disabled[gateway.serialNumber]'  v-model="gateway.ipAddress"></div>
 	<div class="col"><button @click="changeActiveStatus(gateway.serialNumber)" :id="gateway.serialNumber" title="Edit Gateway">📃</button></div>
-	<div class="col"><button @click="$router.push({ name: 'addperipheral', params: { gateway: gateway } })" title="Add Peripheral">➕️</button></div>
+	<div class="col"><button :disabled='(gateway.peripherals.length==10)' :visible='!(gateway.peripherals.length==10)' @click="$router.push({ name: 'addperipheral', params: { gateway: gateway } })" title="Add Peripheral">➕️</button></div>
 	<div class="col"><button @click="deleteGateway(gateway.serialNumber)" :id="gateway.serialNumber" title="Delete Gateway"> 🗑️ </button> </div>
 	</div>
  <div v-for="peripheral in gateway.peripherals" id="hide" v-show='hidden[gateway.serialNumber]' :id="gateway.serialNumber">
@@ -62,15 +62,6 @@
     </b-modal>
 </div>
 
-
-
-
-
-           
-            
-  
-      
-            
             
 </template>
 
@@ -94,13 +85,14 @@ export default {
         	disabled: {},
             gateways: []
         }
+      
     },
     
     methods: {
         getGateways(){
             GatewayService.getGateways().then((response) => {
                 this.gateways = response.data;   
-            });
+            })
         },
         showHide(id) {        	
             this.$set(this.hidden, id, !this.hidden[id]);           
